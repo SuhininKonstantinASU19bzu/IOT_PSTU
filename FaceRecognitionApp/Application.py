@@ -5,13 +5,13 @@ from FaceIdentification import FaceIdentifier as myFI
 app = FastAPI()
 
 @app.get("/knownpeople/")
-async def getKnownPeople():
+async def GetKnownPeople():
     myFI.LoadNewImages();
 
     return {"known_people": f"{myFI.KnownFaces()}"}
 
 @app.post("/uploadphoto/")
-async def uploadPhoto(name: str, photo: UploadFile = File(...)):
+async def UploadPhoto(name: str, photo: UploadFile = File(...)):
     contents = await photo.read()
 
     try:
@@ -25,7 +25,7 @@ async def uploadPhoto(name: str, photo: UploadFile = File(...)):
     return {"upload_result": result}
 
 @app.post("/checkphoto/")
-async def checkPhoto (photo: UploadFile = File(...)):
+async def CheckPhoto (photo: UploadFile = File(...)):
     contents = await photo.read()
 
     myFI.LoadNewImages()

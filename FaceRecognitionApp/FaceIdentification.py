@@ -69,9 +69,35 @@ class FaceIdentifier:
             self._known_face_names.append(name)
 
     def AddPerson(self, name, contents) -> bool:
-
+        ImgEnc = CreateEncoding (contents)
+        if PeopleCounter (GetRgbImg(contents)) == 1:
+            file_path = self.SaveEncoding(ImgEnc)
+            self.ExecuteQuery(f"INSERT INTO person_encoding VALUES ('{name}', '{os.path.basename(file_path)}')")
+            self._uploaded_photos_status = UploadedPhotosStatus.to_process
+            return True
+        else:
+            return False
+            
     def LoadNewImages(self) -> None:
+        if self._uploaded_photos_status == UploadedPhotosStatus.to_process:
+            self.LoadImages()
+        self._uploaded_photos_status = UploadedPhotosStatus.processed
 
     def DetectKnownFaces(self, contents) -> List[str]:
-
+        ImgRgb = GetRgbImg(contents)
+        face_location = face_recognition.face_location(ImgRgb)
+        face_encodings = face_recognition.face_encodings(ImgRgb, face_location)
+        
+        face_names = []
+        for face_encodings in face_encodings:
+            matches = face_recognition.compare_faces(self._known_face_encodings, face_encoding, tolerance=0.6)
+            name = "Unknown"
+            
+            face_distances = face_recognition.face_distance(self._known_face_encodings, face_encoding)
+            best_match_index = np.argmin(face_distances)
+            if matches[best_match_index]:
+                name = self._known_face_names[best_match_index]
+            face_names.append(name)
+            
     def KnownFaces(self):
+        return self._known_face_names

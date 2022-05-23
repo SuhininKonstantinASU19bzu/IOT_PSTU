@@ -15,13 +15,10 @@ async def GetKnownPeople():
 async def UploadPhoto(name: str, photo: UploadFile = File(...)):
     contents = await photo.read()
 
-    try:
-        if myFI.AddPerson(name, contents):
-            result = f"person {name} with photo {photo.filename} uploaded"
-        else:
-            result = "not one person"
-    except:
-        result = "Error!"
+    if myFI.AddPerson(name, contents):
+        result = f"person {name} with photo {photo.filename} uploaded"
+    else:
+        result = "not one person"
 
     return {"upload_result": result}
 
@@ -32,9 +29,9 @@ async def CheckPhoto(photo: UploadFile = File(...)):
     myFI.LoadNewImages()
 
     if myFI.KnownFaces():
-        try:
+        if myFI.DetectedKnownFaces(contents):
             result = myFI.DetectedKnownFaces(contents)
-        except:
+        else:
             result = "no known people in database"
 
     return {"check_result": f"{result}"}
@@ -47,9 +44,9 @@ async def CheckCamera():
     myFI.LoadNewImages()
 
     if myFI.KnownFaces():
-        try:
+        if myFI.DetectedKnownFaces(contents):
             result = myFI.DetectedKnownFaces(contents)
-        except:
+        else:
             result = "no known people in database"
 
     return {"check_result": f"{result}"}

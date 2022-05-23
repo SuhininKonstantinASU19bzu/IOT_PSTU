@@ -31,7 +31,7 @@ async def CheckPhoto(photo: UploadFile = File(...)):
 
     myFI.LoadNewImages()
 
-    if len (myFI.KnownFaces()) > 0:
+    if myFI.KnownFaces():
         try:
             result = myFI.DetectedKnownFaces(contents)
         except:
@@ -46,7 +46,7 @@ async def CheckCamera():
 
     myFI.LoadNewImages()
 
-    if len (myFI.KnownFaces()) > 0:
+    if myFI.KnownFaces():
         try:
             result = myFI.DetectedKnownFaces(contents)
         except:

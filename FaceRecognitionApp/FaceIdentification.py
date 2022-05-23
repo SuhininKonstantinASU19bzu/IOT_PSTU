@@ -98,6 +98,8 @@ class FaceIdentifier:
             if matches[best_match_index]:
                 name = self._known_face_names[best_match_index]
             face_names.append(name)
+
+        return face_names
             
     def KnownFaces(self):
         return self._known_face_names
